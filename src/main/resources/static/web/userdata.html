@@ -149,19 +149,19 @@
 						<div class="form-group">
 							<label class="col-md-2 control-label">用户名：</label>
 							<div class="col-md-8">
-								<input type="text" name="username" id="username" class="form-control"  value="孙悟空" readonly="readonly">
+								<input type="text" name="username" id="username" class="form-control"   readonly="readonly">
 							</div>
 						</div>
 						<div class="form-group">
 							<label  class="col-md-2 control-label">电话号码：</label>
 							<div class="col-md-8">
-								<input type="text" name="phone" id="phone" class="form-control"  placeholder="请输入电话号码" value="13311311313">
+								<input type="text" name="phone" id="phone" class="form-control"  placeholder="请输入电话号码" >
 							</div>
 						</div>
 						<div class="form-group">
 							<label  class="col-md-2 control-label">电子邮箱：</label>
 							<div class="col-md-8">
-								<input type="text" name="email" id="email" class="form-control"  placeholder="请输入电子邮箱" value="sunwk@qq.com">
+								<input type="text" name="email" id="email" class="form-control"  placeholder="请输入电子邮箱">
 							</div>
 						</div>
 						<div class="form-group">
@@ -267,7 +267,56 @@
 		</script>
 		
 	    <script type="text/javascript">
-		
+			$.ajax({
+				url: "/users/isLogin",	//请求地址
+				type: "post",	//请求方式，post/get
+				async: false,	//设置请求是同步还是异步，默认为true异步
+				success: function (data) {
+					if (data.state===200){
+                       let user = data.data;
+					   $("#username").val(user.username);
+					   $("#email").val(user.email);
+						$("#phone").val(user.phone);
+					   if (user.gender===1){
+						   $("#gender-male").click();
+					   }else {
+						   $("#gender-female").click();
+					   }
+
+					}else {
+						alert(data.errorMsg,data.state());
+						window.location.href="login.html"
+					}
+				}
+			});
+			let gender;
+			$('input:radio[name="gender"]').click(function (){
+				gender = $(this).val() ;
+			});
+
+			$("#btn-change-info").click(function (){
+				let phone = document.getElementById("phone").value;
+				let email = document.getElementById("email").value;
+				$.ajax({
+					url: "/users/changeInfo",	//请求地址
+					type: "post",	//请求方式，post/get
+					data:  JSON.stringify({"phone" : phone,"email":email
+					          ,"gender":gender}),	//请求携带参数
+					async: false,	//设置请求是同步还是异步，默认为true异步
+					// 设置返回的数据类型，一般最多的设置为json，这里因为返回的是一个HTML文件，所以设置的为text文本。详细讲解请往下看
+					dataType: "json",
+					contentType: "application/json;charset=UTF-8",//必须
+					success: function (data) {
+						if (data.state===200){
+							alert("修改成功");
+						}else {
+							alert(data.errorMsg)
+						}
+					}
+				});
+
+
+			})
 	   </script>
 	</body>
 

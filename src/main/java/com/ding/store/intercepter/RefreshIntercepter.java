@@ -1,46 +1,39 @@
-package com.hmdp.interceptor;
+package com.ding.store.intercepter;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.hmdp.dto.UserDTO;
-import com.hmdp.utils.UserHolder;
-import jodd.util.StringUtil;
-import org.springframework.data.redis.core.StringRedisTemplate;
+
+import com.ding.store.entity.User;
+import com.ding.store.entity.UserDto;
+import com.ding.store.mapper.UserMapper;
+import com.ding.store.util.UserHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
-import static com.hmdp.utils.RedisConstants.LOGIN_USER_KEY;
-import static com.hmdp.utils.RedisConstants.LOGIN_USER_TTL;
 
 public class RefreshIntercepter implements HandlerInterceptor {
 
-   private StringRedisTemplate stringRedisTemplate;
-    public RefreshIntercepter(StringRedisTemplate stringRedisTemplate) {
-        this.stringRedisTemplate = stringRedisTemplate;
+
+    private UserMapper userMapper;
+
+    public RefreshIntercepter(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //获得请求头里的token
-        String token = request.getHeader("authorization");
 
-        if (StringUtil.isBlank(token)) {
-            return true;
+        Integer uid = (Integer)request.getSession().getAttribute("uid");
+        if (Objects.isNull(uid)){
+            response.sendRedirect("/web/login.html");
+            return false;
         }
-
-        //从redis中获取用户
-        Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(LOGIN_USER_KEY + token);
-        if (userMap.isEmpty()){
-            return true;
-        }
-        UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
-        UserHolder.saveUser(userDTO);
-        //刷新token有效期
-        stringRedisTemplate.expire(LOGIN_USER_KEY+token,LOGIN_USER_TTL, TimeUnit.MINUTES);
-
+        User user = userMapper.findUserById(uid);
+        UserDto userDto = BeanUtil.copyProperties(user, UserDto.class);
+        UserHolder.saveUser(userDto);
         return true;
     }
 

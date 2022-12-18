@@ -1,2 +1,4 @@
-package com.ding.store.service.serviceImpl;public interface GoodsCateGoryService {
+package com.ding.store.service;
+
+public interface GoodsCategoryService {
 }

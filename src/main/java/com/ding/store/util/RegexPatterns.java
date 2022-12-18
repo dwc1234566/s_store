@@ -1,4 +1,4 @@
-package com.hmdp.utils;
+package com.ding.store.util;
 
 /**
  * @author 虎哥

@@ -260,7 +260,7 @@
 				// console.log(location.search.substr(1));
 				$.ajax({
 					url: "/carts/list",
-					data: location.search.substr(1),
+					data: location.search.substring(1,1),
 					type: "GET",
 					dataType: "JSON",
 					success: function(json) {
@@ -335,7 +335,7 @@
 							alert("创建订单成功！");
 							console.log(json.data);
 						} else {
-							alert("创建订单失败！" + json.message);
+							alert("创建订单失败！" + json.errorMsg);
 						}
 					},
 					error: function(xhr) {

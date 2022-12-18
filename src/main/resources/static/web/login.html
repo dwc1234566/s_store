@@ -36,7 +36,8 @@
 				<h4>用户登录</h4>
 				<hr />
 				<!--表单开始-->
-				<form action="/users/login" method="post" id="form-login" class="form-horizontal" role="form">
+<!--				action="/users/login"-->
+				<form  method="post" id="form-login" class="form-horizontal" role="form">
 					<!--用户名-->
 					<div class="form-group">
 						<label for="username" class="col-md-3 control-label">名字：</label>
@@ -66,7 +67,7 @@
 					<div class="form-group">
 						<label class="col-md-3 control-label"></label>
 						<div class="col-md-8">
-							<input id="btn-login" class="btn btn-primary" type="submit" value="登录" />
+							<input id="btn-login" class="btn btn-primary" type="button" value="登录" />
 
 							<span class="pull-right"><small>还没有账号？</small><a href="register.html">注册</a></span>
 						</div>
@@ -102,7 +103,7 @@
 			<!--联系我们、下载客户端等-->
 			<div class="container beforeBottom">
 				<div class="col-md-offset-1 col-md-3">
-					<div><img src="../images/index/stumalllogo.png" alt="" class="footLogo" /></div>
+					<div><img src="../images/index/stumal llogo.png" alt="" class="footLogo" /></div>
 					<div><img src="../images/index/footerFont.png" alt="" /></div>
 
 				</div>
@@ -152,6 +153,32 @@
 
 		</footer>
 		<!--页脚结束-->
+
+	  <script type="text/javascript">
+		  $("#btn-login").click(function (){
+			  let username = document.getElementById("username").value;
+			  let password = document.getElementById("password").value;
+			  $.ajax({
+				  url: "/users/login",	//请求地址
+				  type: "post",	//请求方式，post/get
+				  data:  JSON.stringify({"username": username,"password" : password}),		//请求携带参数
+				  async: false,	//设置请求是同步还是异步，默认为true异步
+				  // 设置返回的数据类型，一般最多的设置为json，这里因为返回的是一个HTML文件，所以设置的为text文本。详细讲解请往下看
+				  dataType: "json",
+				  contentType: "application/json;charset=UTF-8",//必须
+				  success: function (data) {
+					  if (data.state===200){
+						  $.cookie("user",data,{expires:7})
+						  alert("登陆成功");
+						  window.location.href="index.html";
+					  }else {
+						  alert(data.errorMsg)
+					  }
+				  }
+
+			  });
+		  });
+	  </script>
 
 	</body>
 

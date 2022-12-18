@@ -1,2 +1,7 @@
-package com.ding.store.mapper;public interface GoodsCategoryMapper {
+package com.ding.store.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface GoodsCategoryMapper {
 }

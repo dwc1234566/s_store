@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="">
+<mapper namespace="com.ding.store.mapper.OrderMapper">
 
+    <insert id="insertOrder">
+        INSERT INTO t_order (
+            uid, name, phone, address,
+            price,status, order_time, pay_time, created_user, created_time, modified_user,
+            modified_time
+        ) VALUES (
+                     #{uid}, #{name}, #{phone},
+                     #{address}, #{price}, #{status}, #{orderTime}, #{payTime}, #{createdUser},
+                     #{createdTime}, #{modifiedUser}, #{modifiedTime}
+                 )
+    </insert>
+
+
+    <insert id="insertOrderItem">
+        INSERT INTO t_order_item (
+            oid, gid, title, image, price, num, created_user,
+            created_time, modified_user, modified_time
+        ) VALUES (
+                     #{oid}, #{pid}, #{title}, #{image}, #{price}, #{num}, #{createdUser},
+                     #{createdTime}, #{modifiedUser}, #{modifiedTime}
+                 )
+    </insert>
 </mapper>

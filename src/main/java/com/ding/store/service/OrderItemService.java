@@ -1,2 +1,4 @@
-package com.ding.store.service;public interface OrderItemService {
+package com.ding.store.service;
+
+public interface OrderItemService {
 }

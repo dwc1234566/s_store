@@ -288,7 +288,7 @@
 							let address = '<tr>'
 									+ '<td>#{tag}</td>'
 									+ '<td>#{name}</td>'
-									+ '<td>#{province}#{city}#{area}#{address}</td>'
+									+ '<td>#{district}</td>'
 									+ '<td>#{phone}</td>'
 									+ '<td><a class="btn btn-xs btn-info"><span class="fa fa-edit"></span> 修改</a></td>'
 									+ '<td><a onclick="deleteByAid(#{aid})" class="btn btn-xs add-del btn-info"><span class="fa fa-trash-o"></span> 删除</a></td>'
@@ -298,9 +298,7 @@
 							address = address.replace(/#{aid}/g, list[i].aid);
 							address = address.replace(/#{tag}/g, list[i].tag);
 							address = address.replace("#{name}", list[i].name);
-							address = address.replace("#{province}", list[i].provinceName);
-							address = address.replace("#{city}", list[i].cityName);
-							address = address.replace("#{area}", list[i].areaName);
+							address = address.replace("#{district}", list[i].district);
 							address = address.replace("#{address}", list[i].address);
 							address = address.replace("#{phone}", list[i].phone);
 
@@ -320,7 +318,7 @@
 						if (json.state == 200) {
 							showAddressList();
 						} else {
-							alert("设置默认收货地址失败！" + json.message);
+							alert("设置默认收货地址失败！" + json.errorMsge);
 						}
 					},
 					error: function(json) {
@@ -339,7 +337,7 @@
 						if (json.state == 200) {
 							showAddressList();
 						} else {
-							alert("删除收货地址失败！" + json.message);
+							alert("删除收货地址失败！" + json.errorMsge);
 						}
 					},
 					error: function(xhr) {

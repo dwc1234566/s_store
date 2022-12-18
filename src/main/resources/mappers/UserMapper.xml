@@ -1,5 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="">
- 
+<mapper namespace="com.ding.store.mapper.UserMapper">
+
+
+    <insert id="insertUser" useGeneratedKeys="true" parameterType="com.ding.store.entity.User" keyProperty="uid">
+      insert into t_user
+      (username, password, salt, gender, phone,
+       email, avatar, is_delete, created_user,
+       created_time, modified_user, modified_time)
+      values
+          (#{username},#{password},#{salt},#{gender},#{phone},
+           #{email},#{avatar},#{isDelete},#{createdUser},
+           #{createdTime},#{modifiedUser},#{modifiedTime} )
+    </insert>
+
+    <update id="updateAvatar">
+      update t_user
+      set avatar = #{avatar},modified_User=#{modifiedUser},modified_Time = #{modifiedTime}
+      where uid = #{uid}
+    </update>
+
+
+
+    <update id="updateInfo" useGeneratedKeys="true" parameterType="com.ding.store.entity.User">
+       update t_user
+       <set>
+           <if test="username != null">username=#{username},</if>
+           <if test="password != null">password=#{password},</if>
+           <if test="salt != null">salt=#{salt},</if>
+           <if test="gender != null">gender =#{gender},</if>
+           <if test="phone != null">phone =#{phone},</if>
+           <if test="email!= null">email =#{email},</if>
+           <if test="avatar!= null">avatar =#{avatar},</if>
+           <if test="isDelete!= null">is_delete =#{isDelete},</if>
+           <if test="modifiedUser!= null">modified_user =#{modifiedUser},</if>
+           <if test="modifiedTime!= null">modified_time =#{modifiedTime}</if>
+       </set>
+       where uid = #{uid}
+    </update>
+
+
+
+    <update id="updatePassword">
+         update t_user
+         set password = #{password},modified_User = #{modifiedUser},modified_Time = #{modifiedTime}
+         where uid = #{uid}
+    </update>
+
 </mapper>

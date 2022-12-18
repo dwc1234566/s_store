@@ -14,6 +14,7 @@
 		<link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
 		<script src="../bootstrap3/jquery-1.9.1.min.js"></script>
 		<script src="../bootstrap3/js/bootstrap.js"></script>
+		<script src="../js/cart.js"></script>
 		<!-- 字体图标 -->
 		<link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
 		<link rel="stylesheet" type="text/css" href="../css/layout.css" />
@@ -268,10 +269,14 @@
 		</footer>
 		<!--页脚结束-->
 		<script type="text/javascript">
-			$(document).ready(function() {
+
+			$(document).click(function (){
+				calcTotal()
+			})
+
+			$(document).ready(function (){
 				showCartList();
 			});
-
 			function showCartList() {
 				$("#cart-list").empty();
 				$.ajax({
@@ -286,14 +291,13 @@
 										+ 	'<input name="cids" value="#{cid}" type="checkbox" class="ckitem" />'
 										+ '</td>'
 										+ '<td><img src="..#{image}collect.png" class="img-responsive" /></td>'
-										+ '<td>#{title}#{msg}</td>'
+										+ '<td>#{title}</td>'
 										+ '<td>¥<span id="price-#{cid}">#{realPrice}</span></td>'
 										+ '<td>'
-										+ 	'<input type="button" value="-" class="num-btn" onclick="reduceNum(1)" />'
+										+ 	'<input type="button" value="-" class="num-btn" onclick="reduceNum(#{cid})" />'
 										+ 	'<input id="num-#{cid}" type="text" size="2" readonly="readonly" class="num-text" value="#{num}">'
 										+ 	'<input class="num-btn" type="button" value="+" onclick="addNum(#{cid})" />'
 										+ '</td>'
-										+ '<td>¥<span id="total-price-#{cid}">#{totalPrice}</span></td>'
 										+ '<td>'
 										+ 	'<input type="button" onclick="delCartItem(this)" class="cart-del btn btn-default btn-xs" value="删除" />'
 										+ '</td>'
@@ -305,11 +309,6 @@
 							tr = tr.replace(/#{num}/g, list[i].num);
 							tr = tr.replace(/#{totalPrice}/g, list[i].realPrice * list[i].num);
 
-							if (list[i].realPrice < list[i].price) {
-								tr = tr.replace(/#{msg}/g, "比加入时降价" + (list[i].price - list[i].realPrice) + "元");
-							} else {
-								tr = tr.replace(/#{msg}/g, "");
-							}
 							$("#cart-list").append(tr);
 						}
 					}
@@ -318,11 +317,11 @@
 
 			function reduceNum(cid) {
 				$.ajax({
-					url: "/carts/" + cid + "/num/add",
+					url: "/carts/" + cid + "/num/reduce",
 					type: "POST",
 					dataType: "JSON",
-					success: function(json) {
-						if (json.state == 200) {
+					success: function (json) {
+						if (json.state === 200) {
 							// showCartList();
 							$("#num-" + cid).val(json.data);
 							let price = $("#price-" + cid).html();
@@ -332,12 +331,19 @@
 							alert("增加商品数量失败！" + json.message);
 						}
 					},
+						error: function (xhr) {
+							alert("您的登录信息已经过期，请重新登录！HTTP响应码：" + xhr.status);
+							location.href = "login.html";
+						}
+					});
+				}
+
 			function addNum(cid) {
 				$.ajax({
 					url: "/carts/" + cid + "/num/add",
 					type: "POST",
 					dataType: "JSON",
-					success: function(json) {
+					success: function (json) {
 						if (json.state == 200) {
 							// showCartList();
 							$("#num-" + cid).val(json.data);
@@ -347,14 +353,12 @@
 						} else {
 							alert("增加商品数量失败！" + json.message);
 						}
-					},
-
-					error: function(xhr) {
-						alert("您的登录信息已经过期，请重新登录！HTTP响应码：" + xhr.status);
-						location.href = "login.html";
 					}
-				});
+				})
 			}
+
+
+
 
 			/*
 			$(function() {

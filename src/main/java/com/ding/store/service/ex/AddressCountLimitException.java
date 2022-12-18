@@ -1,4 +1,4 @@
-package com.cy.store.service.ex;
+package com.ding.store.service.ex;
 
 /** 收货地址数量达到上限的异常 */
 public class AddressCountLimitException extends ServiceException {

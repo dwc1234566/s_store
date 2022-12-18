@@ -1,5 +1,98 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="">
+<mapper namespace="com.ding.store.mapper.CartMapper">
+
+    <resultMap id="CartEntityMap" type="com.ding.store.entity.Cart">
+        <id column="cid" property="cid"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="modified_user" property="modifiedUser"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+
+
+    <insert id="insert">
+
+        INSERT INTO t_cart (uid, gid, num, created_user, created_time, modified_user, modified_time)
+        VALUES (#{uid}, #{gid}, #{num}, #{createdUser}, #{createdTime}, #{modifiedUser}, #{modifiedTime})
+    </insert>
+
+
+    <update id="updateNumByCid">
+        UPDATE
+            t_cart
+        SET
+            num=#{num},
+            modified_user=#{modifiedUser},
+            modified_time=#{modifiedTime}
+        WHERE
+            cid=#{cid}
+
+    </update>
+    <delete id="deleteByIds" parameterType="list">
+        delete
+
+        FROM
+            t_cart
+        where
+           cid IN (
+        <foreach collection="array" item="cid" separator=",">
+            #{cid}
+        </foreach>
+        )
+
+    </delete>
+
+    <select id="findVOByUid" resultType="com.ding.store.vo.CartVO">
+        SELECT
+            cid,
+            uid,
+            gid,
+            t_cart.num,
+            t_goods.title,
+            t_goods.price AS realPrice,
+            t_goods.image
+        FROM
+            t_cart
+                LEFT JOIN t_goods ON t_cart.gid = t_goods.id
+        WHERE
+            uid = #{uid}
+        ORDER BY
+            t_cart.created_time DESC
+    </select>
+
+
+
+    <select id="findVOByCids" resultType="com.ding.store.vo.CartVO">
+        SELECT
+        cid,
+        uid,
+        Gid,
+        t_cart.num,
+        t_goods.title,
+        t_goods.price AS realPrice,
+        t_goods.image
+        FROM
+        t_cart
+        LEFT JOIN t_goods ON t_cart.gid = t_goods.id
+        WHERE
+        cid IN (
+        <foreach collection="array" item="cid" separator=",">
+            #{cid}
+        </foreach>
+        )
+        ORDER BY
+        t_cart.created_time DESC
+    </select>
+
+    <select id="findByUidAndGid" resultMap="CartEntityMap">
+        SELECT
+            *
+        FROM
+            t_cart
+        WHERE
+            uid=#{uid} AND gid=#{gid}
+    </select>
+
 
 </mapper>
